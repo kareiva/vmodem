@@ -44,7 +44,11 @@ printf "\nPPP>"
  
 # Set the kernel to router mode
 sysctl -q net.ipv4.ip_forward=1
- 
+
+# Sometimes the FORWARD chain policy defaults to DROP, i.e.
+# :FORWARD DROP [0:0]
+iptables -P FORWARD ACCEPT
+
 # Share eth0 over ppp0
 iptables -t nat -A POSTROUTING -o $etherp -j MASQUERADE
 iptables -t filter -A FORWARD -i ppp0 -o $etherp -m state --state RELATED,ESTABLISHED -j ACCEPT
